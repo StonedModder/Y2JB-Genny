@@ -1,0 +1,565 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Y2JB // Sonic-ISO PROTOCOL — host-ui.css
+   Cyberpunk 2077 aesthetic. Requires cybercore.ps5.css.
+   Loaded via <link> in splash.html — safe from CSP inline-style blocks.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Pipeline stage animations (referenced by class name from main.js) */
+@keyframes nc-stage-glow {
+    0%,100% { box-shadow: 0 0 18px rgba(252,238,10,0.45), 0 0 36px rgba(252,238,10,0.18); }
+    50%      { box-shadow: 0 0 32px rgba(252,238,10,0.80), 0 0 64px rgba(252,238,10,0.35); }
+}
+@keyframes nc-arrow-flow {
+    0%   { opacity: 0.25; letter-spacing: -8px; }
+    50%  { opacity: 1;    letter-spacing: -2px; }
+    100% { opacity: 0.25; letter-spacing: -8px; }
+}
+@keyframes nc-dot-pulse {
+    0%,100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(252,238,10,0.8); }
+    50%      { transform: scale(1.3); box-shadow: 0 0 0 5px rgba(252,238,10,0);   }
+}
+.nc-stage-active { animation: nc-stage-glow 1.4s ease-in-out infinite; }
+.nc-arrow-live   { animation: nc-arrow-flow 0.7s ease-in-out infinite; }
+.nc-dot-live     { animation: nc-dot-pulse  1.2s ease-in-out infinite; }
+
+/* ── CP2077 color palette + missing cybercore.ps5 vars ───────────── */
+:root {
+    --cp-yellow:   #fcee0a;
+    --cp-yellow-d: #c9bc00;
+    --cp-cyan:     #00f0ff;
+    --cp-red:      #ff2a6d;
+    --cp-bg:       #060810;
+    --cp-bg-card:  #080b14;
+    --cp-bg-panel: rgba(6, 8, 16, 0.96);
+    --cp-border:   rgba(252, 238, 10, 0.22);
+    --cp-border-bright: var(--cp-yellow);
+
+    --glow-yellow-text:  0 0 12px #fcee0a, 0 0 28px rgba(252,238,10,0.50);
+    --glow-cyan-text:    0 0 12px #00f0ff, 0 0 28px rgba(0,240,255,0.50);
+    --glow-red-text:     0 0 12px #ff2a6d, 0 0 28px rgba(255,42,109,0.50);
+
+    --glow-text-cyan:    var(--glow-cyan-text);
+    --glow-text-magenta: var(--glow-red-text);
+    --glow-text-yellow:  var(--glow-yellow-text);
+    --glow-text-green:   0 0 12px #43ff83, 0 0 28px rgba(67,255,131,0.45);
+
+    /* Override cybercore card accent to yellow */
+    --card-accent: var(--cp-yellow);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────── */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--cp-bg);
+    color: var(--cp-yellow);
+    font-family: var(--font-mono, "Courier New", monospace);
+}
+
+/* ── Night City grid floor — yellow-tinted moving perspective grid ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(rgba(252, 238, 10, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(252, 238, 10, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 20px 20px, 20px 20px;
+    animation: nc-grid 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Night City skyline gradient atmosphere ───────────────────────── */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 100%, rgba(252, 238, 10, 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 60%,  rgba(255, 42, 109, 0.07) 0%, transparent 35%),
+        radial-gradient(ellipse at 80% 60%,  rgba(0, 240, 255, 0.06) 0%, transparent 35%),
+        linear-gradient(to top, rgba(252, 238, 10, 0.04) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes nc-grid {
+    0%   { background-position: 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position: 60px 60px, 60px 60px, 20px 20px, 20px 20px; }
+}
+
+/* ── Shell — Night City ops center ──────────────────────────────────*/
+.host-shell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 1920px;
+    height: 1080px;
+    padding: 48px 100px;
+    gap: 24px;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Hazard stripe top bar */
+.host-shell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--cp-yellow) 0, var(--cp-yellow) 24px,
+        #0a0c14 24px, #0a0c14 36px
+    );
+    box-shadow: 0 0 20px rgba(252, 238, 10, 0.6);
+}
+
+/* Hazard stripe bottom bar */
+.host-shell::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+        90deg,
+        #0a0c14 0, #0a0c14 24px,
+        var(--cp-yellow) 24px, var(--cp-yellow) 36px
+    );
+    box-shadow: 0 0 20px rgba(252, 238, 10, 0.6);
+}
+
+/* Corner HUD brackets — top-left */
+.host-shell > *:first-child::before {
+    display: none;
+}
+
+/* CP2077 corner brackets via inset pseudo wrapper */
+.host-shell > .cyber-heading::before,
+.host-shell > .cyber-heading::after {
+    /* let cybercore handle glitch pseudos */
+}
+
+/* Side column decorators */
+.host-shell > :first-child {
+    position: relative;
+}
+
+/* ── Night City corner brackets (overlay divs via box-shadow trick) ── */
+.host-shell {
+    box-shadow:
+        /* top-left corner */
+        inset  48px  0    0 0 rgba(252, 238, 10, 0),
+        inset  0     48px 0 0 rgba(252, 238, 10, 0);
+}
+
+/* corner bracket pseudo elements on shell children won't work cleanly —
+   use outline approach on shell itself */
+.host-shell > .host-title-wrap,
+.host-shell > .cyber-heading {
+    position: relative;
+}
+
+/* ── Standalone corner brackets ─────────────────────────────────────
+   Achieved by adding brackets as a sibling via body background trick.
+   Use outline box-shadows on the shell. */
+
+/* Top-left bracket */
+@keyframes nc-bracket-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.55; }
+}
+
+/* ── Title ─────────────────────────────────────────────────────────── */
+.host-title {
+    font-family: var(--font-display, "Orbitron", "Rajdhani", monospace);
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--cp-yellow);
+    text-shadow:
+        0 0 20px var(--cp-yellow),
+        0 0 50px rgba(252, 238, 10, 0.50),
+        0 0 100px rgba(252, 238, 10, 0.20);
+    /* Override cybercore heading cyan to yellow */
+    --cyber-heading-color: var(--cp-yellow);
+}
+
+/* Override cybercore .cyber-heading color to yellow */
+.cyber-heading {
+    color: var(--cp-yellow);
+    text-shadow: var(--glow-yellow-text);
+}
+
+.cyber-heading::before {
+    color: var(--cp-red);
+}
+
+.cyber-heading::after {
+    color: var(--cp-cyan);
+}
+
+/* ── Protocol badge strip below title ──────────────────────────────── */
+.host-effects {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    position: relative;
+    padding: 12px 0;
+}
+
+/* Horizontal rule lines flanking the effect row */
+.host-effects::before,
+.host-effects::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cp-yellow), transparent);
+    opacity: 0.35;
+}
+
+.host-effect-icon {
+    font-family: var(--font-display, monospace);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 8px 22px;
+    border: 1px solid currentColor;
+    position: relative;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+
+.host-effect-icon--brand {
+    color: var(--cp-cyan);
+    background: rgba(0, 240, 255, 0.06);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.30);
+}
+
+.host-effect-icon--credit {
+    color: var(--cp-yellow);
+    background: rgba(252, 238, 10, 0.06);
+    box-shadow: 0 0 12px rgba(252, 238, 10, 0.30);
+}
+
+.host-effect-icon--spin {
+    color: var(--cp-red);
+    background: rgba(255, 42, 109, 0.06);
+    box-shadow: 0 0 12px rgba(255, 42, 109, 0.30);
+}
+
+/* Status text */
+.host-effects-title {
+    font-family: var(--font-display, monospace);
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--cp-yellow);
+    text-shadow: var(--glow-yellow-text);
+}
+
+/* ── Module Grid — Arasaka diagnostic panels ──────────────────────── */
+.host-module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 1400px;
+}
+
+.host-module {
+    padding: 20px 26px;
+    background: var(--cp-bg-card);
+    border: 1px solid var(--cp-border);
+    border-top: 2px solid var(--cp-yellow);
+    border-left: 2px solid var(--cp-yellow);
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    box-shadow: inset 0 0 30px rgba(252, 238, 10, 0.03),
+                0 0 15px rgba(252, 238, 10, 0.08);
+}
+
+/* Diagonal cut accent — bottom right */
+.host-module::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 20px;
+    height: 20px;
+    border-bottom: 2px solid var(--cp-red);
+    border-right: 2px solid var(--cp-red);
+}
+
+/* Scan sweep animation */
+.host-module::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(252, 238, 10, 0.04) 50%,
+        transparent 100%
+    );
+    background-size: 100% 200%;
+    animation: nc-sweep 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes nc-sweep {
+    0%   { background-position: 0 -100%; }
+    100% { background-position: 0  200%; }
+}
+
+.host-module-label {
+    font-family: var(--font-display, monospace);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(252, 238, 10, 0.55);
+    margin-bottom: 8px;
+}
+
+.host-module-label::before {
+    content: '// ';
+    color: var(--cp-cyan);
+    opacity: 0.7;
+}
+
+.host-module-value {
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cp-yellow);
+    text-shadow: 0 0 8px rgba(252, 238, 10, 0.5);
+    margin-bottom: 12px;
+    animation: nc-val-flicker 5s ease-in-out infinite;
+}
+
+@keyframes nc-val-flicker {
+    0%, 90%, 100% { opacity: 1; }
+    92%           { opacity: 0.6; }
+    94%           { opacity: 1; }
+    96%           { opacity: 0.4; }
+    98%           { opacity: 1; }
+}
+
+.host-module-meter {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.host-module-fill {
+    height: 100%;
+    width: 0%;
+    position: relative;
+    transition: width 1.4s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.host-module-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent, transparent 3px,
+        rgba(255, 255, 255, 0.18) 3px, rgba(255, 255, 255, 0.18) 6px
+    );
+    animation: cp-stripes 0.4s linear infinite;
+}
+
+@keyframes cp-stripes {
+    from { background-position: 0 0; }
+    to   { background-position: 12px 0; }
+}
+
+.host-module-fill--cyan {
+    background: var(--cp-yellow);
+    box-shadow: 0 0 10px var(--cp-yellow);
+    animation: nc-fill-a 1.8s 0.3s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+
+.host-module-fill--magenta {
+    background: var(--cp-red);
+    box-shadow: 0 0 10px var(--cp-red);
+    animation: nc-fill-b 1.8s 0.5s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+
+.host-module-fill--green {
+    background: var(--cp-cyan);
+    box-shadow: 0 0 10px var(--cp-cyan);
+    animation: nc-fill-c 1.8s 0.7s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+
+@keyframes nc-fill-a { from { width: 0% } to { width: 38%; } }
+@keyframes nc-fill-b { from { width: 0% } to { width: 18%; } }
+@keyframes nc-fill-c { from { width: 0% } to { width: 72%; } }
+
+/* ── Log — NCPD dispatch feed ─────────────────────────────────────── */
+.host-log {
+    width: 100%;
+    max-width: 1400px;
+    background: var(--cp-bg-panel);
+    border: 1px solid var(--cp-border);
+    border-left: 3px solid var(--cp-yellow);
+    box-shadow: inset 0 0 24px rgba(252, 238, 10, 0.03),
+                0 0 18px rgba(252, 238, 10, 0.07);
+}
+
+/* Override cybercore .cyber-card on log section */
+.host-log.cyber-card {
+    --card-accent: var(--cp-yellow);
+    background: var(--cp-bg-panel);
+    border-color: var(--cp-border);
+}
+
+.host-log-stream {
+    height: 144px;
+    overflow-y: auto;
+    padding: 12px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cp-yellow-d) transparent;
+}
+
+.host-log-stream::-webkit-scrollbar       { width: 3px; }
+.host-log-stream::-webkit-scrollbar-track { background: transparent; }
+.host-log-stream::-webkit-scrollbar-thumb { background: var(--cp-yellow-d); }
+
+.host-log-entry {
+    font-family: var(--font-mono, "Courier New", monospace);
+    font-size: 13px;
+    line-height: 1.75;
+    padding: 1px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cp-yellow);
+}
+
+.host-log-entry::before {
+    content: '  ';
+}
+
+/* ── Progress bar — override magenta to yellow ─────────────────────── */
+.host-progress {
+    width: 100%;
+    max-width: 1400px;
+    --progress-color: var(--cp-yellow);
+}
+
+/* Override cybercore .cyber-progress--magenta color */
+.host-progress.cyber-progress--magenta {
+    --progress-color: var(--cp-yellow);
+}
+
+.host-progress-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(252, 238, 10, 0.8);
+}
+
+/* ── Cyber text overrides — CP2077 palette ──────────────────────────*/
+.cyber-text-cyan     { color: var(--cp-cyan);   text-shadow: var(--glow-cyan-text); }
+.cyber-text-magenta  { color: var(--cp-red);    text-shadow: var(--glow-red-text); }
+.cyber-text-yellow   { color: var(--cp-yellow); text-shadow: var(--glow-yellow-text); }
+.cyber-text-green    { color: #43ff83;          text-shadow: var(--glow-text-green); }
+.cyber-text-secondary{ color: rgba(252, 238, 10, 0.55); }
+
+.cyber-text-glow          { color: var(--cp-yellow); text-shadow: var(--glow-yellow-text); }
+.cyber-text-glow--magenta { color: var(--cp-red);    text-shadow: var(--glow-red-text); }
+.cyber-text-glow--yellow  { color: var(--cp-yellow); text-shadow: var(--glow-yellow-text); }
+.cyber-text-glow--green   { color: #43ff83;          text-shadow: var(--glow-text-green); }
+
+/* Override cybercore card accent to yellow globally */
+.cyber-card {
+    --card-accent: var(--cp-yellow);
+    border-color: var(--cp-border);
+    background: var(--cp-bg-card);
+}
+
+/* ── XMB / legacy stubs ──────────────────────────────────────────── */
+.xmb-shell {
+    /* background overridden by inline JS styles */
+    position: fixed !important;
+}
+
+/* Animated Night City grid overlay — pseudo-element bypasses inline bg */
+.xmb-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(rgba(252, 238, 10, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(252, 238, 10, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 20px 20px, 20px 20px;
+    animation: nc-xmb-grid 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes nc-xmb-grid {
+    0%   { background-position: 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position: 60px 60px, 60px 60px, 20px 20px, 20px 20px; }
+}
+
+/* Hazard stripe top bar */
+.xmb-shell::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: repeating-linear-gradient(
+        90deg,
+        #fcee0a 0, #fcee0a 22px,
+        #060810 22px, #060810 33px
+    );
+    box-shadow: 0 0 16px rgba(252, 238, 10, 0.55);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.xmb-wave { position: absolute; left: -140px; width: 2200px; height: 520px; pointer-events: none; border-radius: 50%; }
+.xmb-wave--one { top: 612px; background: rgba(252, 238, 10, 0.06); box-shadow: 0 0 86px rgba(252, 238, 10, 0.08); }
+.xmb-wave--two { top: 688px; background: rgba(0, 0, 0, 0.22); }
+
+.xmb-topbar, .xmb-status, .xmb-ribbon, .xmb-log { position: absolute; }
+.xmb-tile { position: absolute; overflow: hidden; }
+.xmb-tile--selected { background: rgba(252, 238, 10, 0.90); }
+
+.host-kernel-mode .xmb-tile,
+.host-kernel-mode .xmb-status,
+.host-kernel-mode .xmb-log { visibility: visible; opacity: 1; }
+
+#output {
+    min-height: 100vh;
+    color: var(--cp-yellow);
+    font-family: var(--font-mono, "Courier New", monospace);
+}
+#output div { white-space: pre; }
