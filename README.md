@@ -2,6 +2,9 @@
 
 GUI for creating PS5 Y2JB update ZIPs.
 
+<img width="1953" height="1592" alt="image" src="https://github.com/user-attachments/assets/e5b17f4b-99e8-4989-a40a-7b7d507acd66" />
+
+
 ## What It Does
 
 - Creates a new Y2JB update workspace from the bundled template.
